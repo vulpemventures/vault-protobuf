@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package service;
+
+service VulpemVault {
+  rpc NewMultiSig (NewMultiSigRequest) returns (NewMultiSigReply) {}
+  rpc NewUnsignedTx (NewUnsignedTxRequest) returns (NewUnsignedTxReply) {}
+  rpc BroadcastTx (BroadcastTxRequest) returns (BroadcastTxReply) {}
+  rpc HealthCheck (HealthCheckRequest) returns (HealthCheckReply) {}
+}
+
+message NewMultiSigRequest {
+  string network = 1;
+  repeated bytes pubkeys = 2;
+}
+message NewMultiSigReply {
+  string redeemScript = 1;
+  string address = 2;
+  repeated bytes pubkeys = 3;
+}
+
+message NewUnsignedTxRequest {
+  bytes receiver = 1;
+  int64 amount = 2;
+  string walletId = 3;
+}
+message NewUnsignedTxReply {
+  bytes raw = 1;
+}
+
+message BroadcastTxRequest {
+  string walletId = 1;
+  bytes message = 2;
+}
+message BroadcastTxReply {
+  string data = 1;
+}
+
+message HealthCheckRequest {
+  string network = 1;
+}
+message HealthCheckReply {
+  string status = 1;
+}
