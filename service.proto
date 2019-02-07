@@ -4,6 +4,8 @@ package service;
 
 service VulpemVault {
   rpc NewMultiSig (NewMultiSigRequest) returns (NewMultiSigReply) {}
+  rpc SetupMfa (SetupMfaRequest) returns (SetupMfaReply) {}
+  rpc VerifyOtp (VerifyOtpRequest) returns (VerifyOtpReply) {}
   rpc NewUnsignedTx (NewUnsignedTxRequest) returns (NewUnsignedTxReply) {}
   rpc BroadcastTx (BroadcastTxRequest) returns (BroadcastTxReply) {}
   rpc HealthCheck (HealthCheckRequest) returns (HealthCheckReply) {}
@@ -12,11 +14,29 @@ service VulpemVault {
 message NewMultiSigRequest {
   string network = 1;
   repeated bytes pubkeys = 2;
+  uint64 satoshiLimit = 3;
+  uint64 timeRange = 4;
 }
 message NewMultiSigReply {
   string redeemScript = 1;
   string address = 2;
   repeated bytes pubkeys = 3;
+}
+
+message SetupMfaRequest {
+  string walletId = 1;
+}
+message SetupMfaReply {
+  string barcode = 1;
+  string url = 2;
+}
+
+message VerifyOtpRequest {
+  string walletId = 1;
+  uint64 otp = 2;
+}
+message VerifyOtpReply {
+  bool verified = 1;
 }
 
 message NewUnsignedTxRequest {
@@ -31,6 +51,7 @@ message NewUnsignedTxReply {
 message BroadcastTxRequest {
   string walletId = 1;
   bytes message = 2;
+  uint64 otp = 3;
 }
 message BroadcastTxReply {
   string data = 1;

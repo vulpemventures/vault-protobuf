@@ -4,9 +4,9 @@
 package service
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
 	math "math"
 )
@@ -20,11 +20,13 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type NewMultiSigRequest struct {
 	Network              string   `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`
 	Pubkeys              [][]byte `protobuf:"bytes,2,rep,name=pubkeys,proto3" json:"pubkeys,omitempty"`
+	SatoshiLimit         uint64   `protobuf:"varint,3,opt,name=satoshiLimit,proto3" json:"satoshiLimit,omitempty"`
+	TimeRange            uint64   `protobuf:"varint,4,opt,name=timeRange,proto3" json:"timeRange,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -67,6 +69,20 @@ func (m *NewMultiSigRequest) GetPubkeys() [][]byte {
 		return m.Pubkeys
 	}
 	return nil
+}
+
+func (m *NewMultiSigRequest) GetSatoshiLimit() uint64 {
+	if m != nil {
+		return m.SatoshiLimit
+	}
+	return 0
+}
+
+func (m *NewMultiSigRequest) GetTimeRange() uint64 {
+	if m != nil {
+		return m.TimeRange
+	}
+	return 0
 }
 
 type NewMultiSigReply struct {
@@ -124,6 +140,178 @@ func (m *NewMultiSigReply) GetPubkeys() [][]byte {
 	return nil
 }
 
+type SetupMfaRequest struct {
+	WalletId             string   `protobuf:"bytes,1,opt,name=walletId,proto3" json:"walletId,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetupMfaRequest) Reset()         { *m = SetupMfaRequest{} }
+func (m *SetupMfaRequest) String() string { return proto.CompactTextString(m) }
+func (*SetupMfaRequest) ProtoMessage()    {}
+func (*SetupMfaRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a0b84a42fa06f626, []int{2}
+}
+
+func (m *SetupMfaRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetupMfaRequest.Unmarshal(m, b)
+}
+func (m *SetupMfaRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetupMfaRequest.Marshal(b, m, deterministic)
+}
+func (m *SetupMfaRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetupMfaRequest.Merge(m, src)
+}
+func (m *SetupMfaRequest) XXX_Size() int {
+	return xxx_messageInfo_SetupMfaRequest.Size(m)
+}
+func (m *SetupMfaRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetupMfaRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetupMfaRequest proto.InternalMessageInfo
+
+func (m *SetupMfaRequest) GetWalletId() string {
+	if m != nil {
+		return m.WalletId
+	}
+	return ""
+}
+
+type SetupMfaReply struct {
+	Barcode              string   `protobuf:"bytes,1,opt,name=barcode,proto3" json:"barcode,omitempty"`
+	Url                  string   `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetupMfaReply) Reset()         { *m = SetupMfaReply{} }
+func (m *SetupMfaReply) String() string { return proto.CompactTextString(m) }
+func (*SetupMfaReply) ProtoMessage()    {}
+func (*SetupMfaReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a0b84a42fa06f626, []int{3}
+}
+
+func (m *SetupMfaReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetupMfaReply.Unmarshal(m, b)
+}
+func (m *SetupMfaReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetupMfaReply.Marshal(b, m, deterministic)
+}
+func (m *SetupMfaReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetupMfaReply.Merge(m, src)
+}
+func (m *SetupMfaReply) XXX_Size() int {
+	return xxx_messageInfo_SetupMfaReply.Size(m)
+}
+func (m *SetupMfaReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetupMfaReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetupMfaReply proto.InternalMessageInfo
+
+func (m *SetupMfaReply) GetBarcode() string {
+	if m != nil {
+		return m.Barcode
+	}
+	return ""
+}
+
+func (m *SetupMfaReply) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
+type VerifyOtpRequest struct {
+	WalletId             string   `protobuf:"bytes,1,opt,name=walletId,proto3" json:"walletId,omitempty"`
+	Otp                  uint64   `protobuf:"varint,2,opt,name=otp,proto3" json:"otp,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *VerifyOtpRequest) Reset()         { *m = VerifyOtpRequest{} }
+func (m *VerifyOtpRequest) String() string { return proto.CompactTextString(m) }
+func (*VerifyOtpRequest) ProtoMessage()    {}
+func (*VerifyOtpRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a0b84a42fa06f626, []int{4}
+}
+
+func (m *VerifyOtpRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_VerifyOtpRequest.Unmarshal(m, b)
+}
+func (m *VerifyOtpRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_VerifyOtpRequest.Marshal(b, m, deterministic)
+}
+func (m *VerifyOtpRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VerifyOtpRequest.Merge(m, src)
+}
+func (m *VerifyOtpRequest) XXX_Size() int {
+	return xxx_messageInfo_VerifyOtpRequest.Size(m)
+}
+func (m *VerifyOtpRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_VerifyOtpRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VerifyOtpRequest proto.InternalMessageInfo
+
+func (m *VerifyOtpRequest) GetWalletId() string {
+	if m != nil {
+		return m.WalletId
+	}
+	return ""
+}
+
+func (m *VerifyOtpRequest) GetOtp() uint64 {
+	if m != nil {
+		return m.Otp
+	}
+	return 0
+}
+
+type VerifyOtpReply struct {
+	Verified             bool     `protobuf:"varint,1,opt,name=verified,proto3" json:"verified,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *VerifyOtpReply) Reset()         { *m = VerifyOtpReply{} }
+func (m *VerifyOtpReply) String() string { return proto.CompactTextString(m) }
+func (*VerifyOtpReply) ProtoMessage()    {}
+func (*VerifyOtpReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a0b84a42fa06f626, []int{5}
+}
+
+func (m *VerifyOtpReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_VerifyOtpReply.Unmarshal(m, b)
+}
+func (m *VerifyOtpReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_VerifyOtpReply.Marshal(b, m, deterministic)
+}
+func (m *VerifyOtpReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VerifyOtpReply.Merge(m, src)
+}
+func (m *VerifyOtpReply) XXX_Size() int {
+	return xxx_messageInfo_VerifyOtpReply.Size(m)
+}
+func (m *VerifyOtpReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_VerifyOtpReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VerifyOtpReply proto.InternalMessageInfo
+
+func (m *VerifyOtpReply) GetVerified() bool {
+	if m != nil {
+		return m.Verified
+	}
+	return false
+}
+
 type NewUnsignedTxRequest struct {
 	Receiver             []byte   `protobuf:"bytes,1,opt,name=receiver,proto3" json:"receiver,omitempty"`
 	Amount               int64    `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
@@ -137,7 +325,7 @@ func (m *NewUnsignedTxRequest) Reset()         { *m = NewUnsignedTxRequest{} }
 func (m *NewUnsignedTxRequest) String() string { return proto.CompactTextString(m) }
 func (*NewUnsignedTxRequest) ProtoMessage()    {}
 func (*NewUnsignedTxRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a0b84a42fa06f626, []int{2}
+	return fileDescriptor_a0b84a42fa06f626, []int{6}
 }
 
 func (m *NewUnsignedTxRequest) XXX_Unmarshal(b []byte) error {
@@ -190,7 +378,7 @@ func (m *NewUnsignedTxReply) Reset()         { *m = NewUnsignedTxReply{} }
 func (m *NewUnsignedTxReply) String() string { return proto.CompactTextString(m) }
 func (*NewUnsignedTxReply) ProtoMessage()    {}
 func (*NewUnsignedTxReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a0b84a42fa06f626, []int{3}
+	return fileDescriptor_a0b84a42fa06f626, []int{7}
 }
 
 func (m *NewUnsignedTxReply) XXX_Unmarshal(b []byte) error {
@@ -221,6 +409,7 @@ func (m *NewUnsignedTxReply) GetRaw() []byte {
 type BroadcastTxRequest struct {
 	WalletId             string   `protobuf:"bytes,1,opt,name=walletId,proto3" json:"walletId,omitempty"`
 	Message              []byte   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Otp                  uint64   `protobuf:"varint,3,opt,name=otp,proto3" json:"otp,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -230,7 +419,7 @@ func (m *BroadcastTxRequest) Reset()         { *m = BroadcastTxRequest{} }
 func (m *BroadcastTxRequest) String() string { return proto.CompactTextString(m) }
 func (*BroadcastTxRequest) ProtoMessage()    {}
 func (*BroadcastTxRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a0b84a42fa06f626, []int{4}
+	return fileDescriptor_a0b84a42fa06f626, []int{8}
 }
 
 func (m *BroadcastTxRequest) XXX_Unmarshal(b []byte) error {
@@ -265,6 +454,13 @@ func (m *BroadcastTxRequest) GetMessage() []byte {
 	return nil
 }
 
+func (m *BroadcastTxRequest) GetOtp() uint64 {
+	if m != nil {
+		return m.Otp
+	}
+	return 0
+}
+
 type BroadcastTxReply struct {
 	Data                 string   `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -276,7 +472,7 @@ func (m *BroadcastTxReply) Reset()         { *m = BroadcastTxReply{} }
 func (m *BroadcastTxReply) String() string { return proto.CompactTextString(m) }
 func (*BroadcastTxReply) ProtoMessage()    {}
 func (*BroadcastTxReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a0b84a42fa06f626, []int{5}
+	return fileDescriptor_a0b84a42fa06f626, []int{9}
 }
 
 func (m *BroadcastTxReply) XXX_Unmarshal(b []byte) error {
@@ -315,7 +511,7 @@ func (m *HealthCheckRequest) Reset()         { *m = HealthCheckRequest{} }
 func (m *HealthCheckRequest) String() string { return proto.CompactTextString(m) }
 func (*HealthCheckRequest) ProtoMessage()    {}
 func (*HealthCheckRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a0b84a42fa06f626, []int{6}
+	return fileDescriptor_a0b84a42fa06f626, []int{10}
 }
 
 func (m *HealthCheckRequest) XXX_Unmarshal(b []byte) error {
@@ -354,7 +550,7 @@ func (m *HealthCheckReply) Reset()         { *m = HealthCheckReply{} }
 func (m *HealthCheckReply) String() string { return proto.CompactTextString(m) }
 func (*HealthCheckReply) ProtoMessage()    {}
 func (*HealthCheckReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a0b84a42fa06f626, []int{7}
+	return fileDescriptor_a0b84a42fa06f626, []int{11}
 }
 
 func (m *HealthCheckReply) XXX_Unmarshal(b []byte) error {
@@ -385,6 +581,10 @@ func (m *HealthCheckReply) GetStatus() string {
 func init() {
 	proto.RegisterType((*NewMultiSigRequest)(nil), "service.NewMultiSigRequest")
 	proto.RegisterType((*NewMultiSigReply)(nil), "service.NewMultiSigReply")
+	proto.RegisterType((*SetupMfaRequest)(nil), "service.SetupMfaRequest")
+	proto.RegisterType((*SetupMfaReply)(nil), "service.SetupMfaReply")
+	proto.RegisterType((*VerifyOtpRequest)(nil), "service.VerifyOtpRequest")
+	proto.RegisterType((*VerifyOtpReply)(nil), "service.VerifyOtpReply")
 	proto.RegisterType((*NewUnsignedTxRequest)(nil), "service.NewUnsignedTxRequest")
 	proto.RegisterType((*NewUnsignedTxReply)(nil), "service.NewUnsignedTxReply")
 	proto.RegisterType((*BroadcastTxRequest)(nil), "service.BroadcastTxRequest")
@@ -396,32 +596,42 @@ func init() {
 func init() { proto.RegisterFile("service.proto", fileDescriptor_a0b84a42fa06f626) }
 
 var fileDescriptor_a0b84a42fa06f626 = []byte{
-	// 395 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x93, 0xcd, 0x8e, 0xda, 0x30,
-	0x14, 0x85, 0x87, 0x49, 0xc5, 0xb4, 0x97, 0x8c, 0x14, 0x59, 0xd5, 0x28, 0x65, 0x54, 0x09, 0x79,
-	0x81, 0x50, 0x17, 0x2c, 0xda, 0x37, 0x68, 0x17, 0xd0, 0x4a, 0xb0, 0x08, 0x2d, 0x7b, 0x93, 0xdc,
-	0x42, 0x8a, 0xf3, 0x53, 0xdb, 0x21, 0xe5, 0xc9, 0xfa, 0x7a, 0x95, 0x8d, 0x83, 0x6c, 0xd2, 0xaa,
-	0x3b, 0x1f, 0x6c, 0xbe, 0x73, 0x7c, 0xae, 0x03, 0x8f, 0x12, 0xc5, 0x29, 0x4f, 0x71, 0x5e, 0x8b,
-	0x4a, 0x55, 0xe4, 0xc1, 0x4a, 0xba, 0x04, 0xb2, 0xc6, 0x76, 0xd5, 0x70, 0x95, 0x6f, 0xf2, 0x7d,
-	0x82, 0x3f, 0x1b, 0x94, 0x8a, 0xc4, 0xf0, 0x50, 0xa2, 0x6a, 0x2b, 0x71, 0x8c, 0x07, 0x93, 0xc1,
-	0xec, 0x55, 0xd2, 0x49, 0xbd, 0x53, 0x37, 0xbb, 0x23, 0x9e, 0x65, 0x7c, 0x3f, 0x09, 0x66, 0x61,
-	0xd2, 0x49, 0xfa, 0x03, 0x22, 0x8f, 0x54, 0xf3, 0x33, 0xa1, 0x10, 0x0a, 0xcc, 0x10, 0x8b, 0x4d,
-	0x2a, 0xf2, 0x5a, 0x59, 0x98, 0xf7, 0x9b, 0x26, 0xb2, 0x2c, 0x13, 0x28, 0x35, 0xd1, 0x78, 0x59,
-	0xe9, 0x7a, 0x05, 0xbe, 0xd7, 0x77, 0x78, 0xbd, 0xc6, 0xf6, 0x5b, 0x29, 0xf3, 0x7d, 0x89, 0xd9,
-	0xd7, 0x5f, 0x5d, 0xee, 0x31, 0xbc, 0x14, 0x98, 0x62, 0x7e, 0x42, 0x61, 0xbc, 0xc2, 0xe4, 0xaa,
-	0xc9, 0x13, 0x0c, 0x59, 0x51, 0x35, 0xa5, 0x32, 0x36, 0x41, 0x62, 0x95, 0xfe, 0x4f, 0xcb, 0x38,
-	0x47, 0xf5, 0x39, 0x8b, 0x03, 0x13, 0xe0, 0xaa, 0xe9, 0xd4, 0xb4, 0xe3, 0xfa, 0xe8, 0x5b, 0x45,
-	0x10, 0x08, 0xd6, 0x5a, 0x03, 0xbd, 0xa4, 0x5f, 0x80, 0x7c, 0x14, 0x15, 0xcb, 0x52, 0x26, 0x95,
-	0x97, 0xe6, 0x4a, 0x1e, 0xf8, 0x64, 0x7d, 0xb7, 0x02, 0xa5, 0x64, 0x7b, 0x34, 0x71, 0xc2, 0xa4,
-	0x93, 0x74, 0x0a, 0x91, 0xc7, 0xd2, 0x8e, 0x04, 0x5e, 0x64, 0x4c, 0x31, 0x4b, 0x31, 0x6b, 0x3a,
-	0x07, 0xb2, 0x44, 0xc6, 0xd5, 0xe1, 0xd3, 0x01, 0xd3, 0xe3, 0x7f, 0x27, 0x47, 0xdf, 0x41, 0xe4,
-	0x9d, 0xd7, 0xdc, 0x27, 0x18, 0x4a, 0xc5, 0x54, 0x23, 0xed, 0x61, 0xab, 0xde, 0xff, 0xbe, 0x87,
-	0xd1, 0xb6, 0xe1, 0x35, 0x16, 0x5b, 0xd6, 0x70, 0x45, 0x16, 0x30, 0x72, 0x66, 0x4b, 0x9e, 0xe7,
-	0xdd, 0x6b, 0xea, 0xbf, 0x9d, 0xf1, 0x9b, 0xbf, 0x6f, 0xd6, 0xfc, 0x4c, 0xef, 0xc8, 0x0a, 0x1e,
-	0xbd, 0x42, 0xc9, 0x5b, 0xf7, 0x74, 0x6f, 0xa0, 0xe3, 0xe7, 0x7f, 0x6d, 0x5f, 0x70, 0x0b, 0x18,
-	0x39, 0x5d, 0x39, 0xb9, 0xfa, 0xd3, 0x70, 0x72, 0xdd, 0xd6, 0x7b, 0x01, 0x39, 0xe5, 0x38, 0xa0,
-	0x7e, 0xc5, 0x0e, 0xe8, 0xb6, 0x4f, 0x7a, 0xb7, 0x1b, 0x9a, 0xef, 0xeb, 0xc3, 0x9f, 0x00, 0x00,
-	0x00, 0xff, 0xff, 0x6c, 0xfa, 0xa8, 0xa0, 0x70, 0x03, 0x00, 0x00,
+	// 550 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0x4d, 0xaf, 0xd2, 0x40,
+	0x14, 0x7d, 0x58, 0xf2, 0x80, 0x0b, 0x68, 0x33, 0x31, 0x58, 0xfb, 0x34, 0x21, 0xb3, 0x78, 0x21,
+	0x46, 0x59, 0xe8, 0xd2, 0xc4, 0xf8, 0xb1, 0x78, 0x9a, 0xc8, 0x33, 0x29, 0xca, 0xca, 0xcd, 0xd0,
+	0x5e, 0x60, 0xa4, 0xa5, 0x75, 0x66, 0x0a, 0xf2, 0x17, 0xfc, 0x49, 0xfe, 0x3a, 0x33, 0x65, 0x0a,
+	0x53, 0xe0, 0x45, 0x77, 0x73, 0xe6, 0xde, 0x39, 0xe7, 0x70, 0xef, 0x29, 0xd0, 0x95, 0x28, 0xd6,
+	0x3c, 0xc4, 0x61, 0x26, 0x52, 0x95, 0x92, 0x86, 0x81, 0xf4, 0x77, 0x0d, 0xc8, 0x2d, 0x6e, 0x46,
+	0x79, 0xac, 0xf8, 0x98, 0xcf, 0x03, 0xfc, 0x99, 0xa3, 0x54, 0xc4, 0x83, 0xc6, 0x0a, 0xd5, 0x26,
+	0x15, 0x4b, 0xaf, 0xd6, 0xaf, 0x0d, 0x5a, 0x41, 0x09, 0x75, 0x25, 0xcb, 0xa7, 0x4b, 0xdc, 0x4a,
+	0xef, 0x5e, 0xdf, 0x19, 0x74, 0x82, 0x12, 0x12, 0x0a, 0x1d, 0xc9, 0x54, 0x2a, 0x17, 0xfc, 0x33,
+	0x4f, 0xb8, 0xf2, 0x9c, 0x7e, 0x6d, 0x50, 0x0f, 0x2a, 0x77, 0xe4, 0x09, 0xb4, 0x14, 0x4f, 0x30,
+	0x60, 0xab, 0x39, 0x7a, 0xf5, 0xa2, 0xe1, 0x70, 0x41, 0x7f, 0x80, 0x5b, 0xf1, 0x92, 0xc5, 0x5b,
+	0xcd, 0x2a, 0x30, 0x42, 0x4c, 0xc6, 0xa1, 0xe0, 0x99, 0x32, 0x76, 0x2a, 0x77, 0xda, 0x13, 0x8b,
+	0x22, 0x81, 0x52, 0x7b, 0x2a, 0xdc, 0x1a, 0x68, 0xbb, 0x75, 0x2a, 0x6e, 0xe9, 0x0b, 0x78, 0x30,
+	0x46, 0x95, 0x67, 0xa3, 0x19, 0x2b, 0x7f, 0xb4, 0x0f, 0xcd, 0x0d, 0x8b, 0x63, 0x54, 0x9f, 0x22,
+	0x23, 0xb3, 0xc7, 0xf4, 0x35, 0x74, 0x0f, 0xed, 0xda, 0x97, 0x07, 0x8d, 0x29, 0x13, 0x61, 0x1a,
+	0x61, 0x39, 0x21, 0x03, 0x89, 0x0b, 0x4e, 0x2e, 0x62, 0xe3, 0x44, 0x1f, 0xe9, 0x5b, 0x70, 0x27,
+	0x28, 0xf8, 0x6c, 0xfb, 0x45, 0x65, 0xff, 0x21, 0xa6, 0x19, 0x52, 0x95, 0x15, 0x0c, 0xf5, 0x40,
+	0x1f, 0xe9, 0x73, 0xb8, 0x6f, 0x31, 0x68, 0x7d, 0x1f, 0x9a, 0x6b, 0x7d, 0xc3, 0x71, 0xf7, 0xbe,
+	0x19, 0xec, 0x31, 0x9d, 0xc1, 0xc3, 0x5b, 0xdc, 0x7c, 0x5b, 0x49, 0x3e, 0x5f, 0x61, 0xf4, 0xf5,
+	0x97, 0xa5, 0x29, 0x30, 0x44, 0xbe, 0x46, 0x51, 0xbc, 0xe9, 0x04, 0x7b, 0x4c, 0x7a, 0x70, 0xc9,
+	0x92, 0x34, 0x5f, 0xa9, 0x42, 0xd6, 0x09, 0x0c, 0xaa, 0xf8, 0x74, 0x8e, 0x86, 0x72, 0x5d, 0x64,
+	0xc7, 0xd6, 0xd1, 0xce, 0x5c, 0x70, 0x04, 0xdb, 0x18, 0x01, 0x7d, 0xa4, 0xdf, 0x81, 0xbc, 0x17,
+	0x29, 0x8b, 0x42, 0x26, 0x55, 0xc5, 0xcd, 0x9d, 0x13, 0xf0, 0xa0, 0x91, 0xa0, 0x94, 0x6c, 0x8e,
+	0x85, 0x9d, 0x4e, 0x50, 0xc2, 0x72, 0x36, 0xce, 0x61, 0x36, 0xd7, 0xe0, 0x56, 0xd8, 0xb5, 0x07,
+	0x02, 0xf5, 0x88, 0x29, 0x66, 0x78, 0x8b, 0x33, 0x1d, 0x02, 0xf9, 0x88, 0x2c, 0x56, 0x8b, 0x0f,
+	0x0b, 0x0c, 0x97, 0xff, 0x4c, 0x3a, 0x7d, 0x06, 0x6e, 0xa5, 0x5f, 0xf3, 0xf6, 0xe0, 0x52, 0x2a,
+	0xa6, 0x72, 0x69, 0x9a, 0x0d, 0x7a, 0xf9, 0xc7, 0x81, 0xf6, 0x24, 0x8f, 0x33, 0x4c, 0x26, 0x2c,
+	0x8f, 0x15, 0xb9, 0x81, 0xb6, 0x95, 0x64, 0x72, 0x35, 0x2c, 0x3f, 0xbf, 0xd3, 0x6f, 0xcd, 0x7f,
+	0x7c, 0xbe, 0x98, 0xc5, 0x5b, 0x7a, 0x41, 0xde, 0x40, 0xb3, 0xcc, 0x1d, 0xf1, 0xf6, 0x8d, 0x47,
+	0xc9, 0xf5, 0x7b, 0x67, 0x2a, 0xbb, 0xf7, 0xef, 0xa0, 0xb5, 0x0f, 0x0e, 0x39, 0x28, 0x1d, 0xc7,
+	0xd1, 0x7f, 0x74, 0xae, 0xb4, 0xa3, 0x18, 0x41, 0xb7, 0xb2, 0x65, 0xf2, 0xd4, 0x36, 0x7c, 0x92,
+	0x32, 0xff, 0xea, 0xae, 0xf2, 0x8e, 0xee, 0x06, 0xda, 0xd6, 0xba, 0xac, 0xd1, 0x9c, 0x46, 0xc4,
+	0x1a, 0xcd, 0xf1, 0x86, 0x77, 0x44, 0xd6, 0x7e, 0x2c, 0xa2, 0xd3, 0x2d, 0x5b, 0x44, 0xc7, 0x2b,
+	0xa5, 0x17, 0xd3, 0xcb, 0xe2, 0x3f, 0xf1, 0xd5, 0xdf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xce, 0x0d,
+	0xaa, 0x38, 0x24, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -437,6 +647,8 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type VulpemVaultClient interface {
 	NewMultiSig(ctx context.Context, in *NewMultiSigRequest, opts ...grpc.CallOption) (*NewMultiSigReply, error)
+	SetupMfa(ctx context.Context, in *SetupMfaRequest, opts ...grpc.CallOption) (*SetupMfaReply, error)
+	VerifyOtp(ctx context.Context, in *VerifyOtpRequest, opts ...grpc.CallOption) (*VerifyOtpReply, error)
 	NewUnsignedTx(ctx context.Context, in *NewUnsignedTxRequest, opts ...grpc.CallOption) (*NewUnsignedTxReply, error)
 	BroadcastTx(ctx context.Context, in *BroadcastTxRequest, opts ...grpc.CallOption) (*BroadcastTxReply, error)
 	HealthCheck(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckReply, error)
@@ -453,6 +665,24 @@ func NewVulpemVaultClient(cc *grpc.ClientConn) VulpemVaultClient {
 func (c *vulpemVaultClient) NewMultiSig(ctx context.Context, in *NewMultiSigRequest, opts ...grpc.CallOption) (*NewMultiSigReply, error) {
 	out := new(NewMultiSigReply)
 	err := c.cc.Invoke(ctx, "/service.VulpemVault/NewMultiSig", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vulpemVaultClient) SetupMfa(ctx context.Context, in *SetupMfaRequest, opts ...grpc.CallOption) (*SetupMfaReply, error) {
+	out := new(SetupMfaReply)
+	err := c.cc.Invoke(ctx, "/service.VulpemVault/SetupMfa", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vulpemVaultClient) VerifyOtp(ctx context.Context, in *VerifyOtpRequest, opts ...grpc.CallOption) (*VerifyOtpReply, error) {
+	out := new(VerifyOtpReply)
+	err := c.cc.Invoke(ctx, "/service.VulpemVault/VerifyOtp", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -489,6 +719,8 @@ func (c *vulpemVaultClient) HealthCheck(ctx context.Context, in *HealthCheckRequ
 // VulpemVaultServer is the server API for VulpemVault service.
 type VulpemVaultServer interface {
 	NewMultiSig(context.Context, *NewMultiSigRequest) (*NewMultiSigReply, error)
+	SetupMfa(context.Context, *SetupMfaRequest) (*SetupMfaReply, error)
+	VerifyOtp(context.Context, *VerifyOtpRequest) (*VerifyOtpReply, error)
 	NewUnsignedTx(context.Context, *NewUnsignedTxRequest) (*NewUnsignedTxReply, error)
 	BroadcastTx(context.Context, *BroadcastTxRequest) (*BroadcastTxReply, error)
 	HealthCheck(context.Context, *HealthCheckRequest) (*HealthCheckReply, error)
@@ -512,6 +744,42 @@ func _VulpemVault_NewMultiSig_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VulpemVaultServer).NewMultiSig(ctx, req.(*NewMultiSigRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VulpemVault_SetupMfa_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetupMfaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VulpemVaultServer).SetupMfa(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/service.VulpemVault/SetupMfa",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VulpemVaultServer).SetupMfa(ctx, req.(*SetupMfaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VulpemVault_VerifyOtp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyOtpRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VulpemVaultServer).VerifyOtp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/service.VulpemVault/VerifyOtp",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VulpemVaultServer).VerifyOtp(ctx, req.(*VerifyOtpRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -577,6 +845,14 @@ var _VulpemVault_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NewMultiSig",
 			Handler:    _VulpemVault_NewMultiSig_Handler,
+		},
+		{
+			MethodName: "SetupMfa",
+			Handler:    _VulpemVault_SetupMfa_Handler,
+		},
+		{
+			MethodName: "VerifyOtp",
+			Handler:    _VulpemVault_VerifyOtp_Handler,
 		},
 		{
 			MethodName: "NewUnsignedTx",
