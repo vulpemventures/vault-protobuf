@@ -5,6 +5,7 @@ package service;
 service VulpemVault {
   rpc NewMultiSig (NewMultiSigRequest) returns (NewMultiSigReply) {}
   rpc SetupMfa (SetupMfaRequest) returns (SetupMfaReply) {}
+  rpc GenerateOtp (GenerateOtpRequest) returns (GenerateOtpReply) {}
   rpc VerifyOtp (VerifyOtpRequest) returns (VerifyOtpReply) {}
   rpc NewUnsignedTx (NewUnsignedTxRequest) returns (NewUnsignedTxReply) {}
   rpc BroadcastTx (BroadcastTxRequest) returns (BroadcastTxReply) {}
@@ -29,6 +30,13 @@ message SetupMfaRequest {
 message SetupMfaReply {
   string barcode = 1;
   string url = 2;
+}
+
+message GenerateOtpRequest {
+  string walletId = 1;
+}
+message GenerateOtpReply {
+  uint64 otp = 1;
 }
 
 message VerifyOtpRequest {
