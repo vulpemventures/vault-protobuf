@@ -14,14 +14,14 @@ service VulpemVault {
 
 message NewMultiSigRequest {
   string network = 1;
-  repeated bytes pubkeys = 2;
+  repeated string pubkeys = 2;
   uint64 satoshiLimit = 3;
   uint64 timeRange = 4;
 }
 message NewMultiSigReply {
   string redeemScript = 1;
   string address = 2;
-  repeated bytes pubkeys = 3;
+  repeated string pubkeys = 3;
 }
 
 message SetupMfaRequest {
@@ -48,17 +48,17 @@ message VerifyOtpReply {
 }
 
 message NewUnsignedTxRequest {
-  bytes receiver = 1;
+  string receiver = 1;
   int64 amount = 2;
   string walletId = 3;
 }
 message NewUnsignedTxReply {
-  bytes raw = 1;
+  string raw = 1;
 }
 
 message BroadcastTxRequest {
   string walletId = 1;
-  bytes message = 2;
+  string message = 2;
   uint64 otp = 3;
 }
 message BroadcastTxReply {
