@@ -65,9 +65,16 @@ message BroadcastTxReply {
   string data = 1;
 }
 
-message HealthCheckRequest {
-  string network = 1;
+message Service {
+  int64 code = 1;
+  string status = 2;
+  string name = 3;
+  string network = 4;
+  string error = 5;
 }
+
+message HealthCheckRequest {}
 message HealthCheckReply {
   string status = 1;
+  repeated Service services = 2;
 }
