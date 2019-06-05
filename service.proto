@@ -9,6 +9,9 @@ service VulpemVault {
   rpc NewUnsignedTx (NewUnsignedTxRequest) returns (NewUnsignedTxReply) {}
   rpc BroadcastTx (BroadcastTxRequest) returns (BroadcastTxReply) {}
   rpc HealthCheck (HealthCheckRequest) returns (HealthCheckReply) {}
+  rpc Publish(PublishRequest) returns (PublishReply) {}
+  rpc Subscribe(SubscribeRequest) returns (SubscribeReply) {}
+  rpc Pull(PullRequest) returns (stream Psbt) {}
 }
 
 message NewMultiSigRequest {
@@ -69,4 +72,31 @@ message HealthCheckRequest {}
 message HealthCheckReply {
   string status = 1;
   repeated Service services = 2;
+}
+
+message Identity {
+  string pubkey = 1;
+}
+message Psbt {
+  string encoded = 1;
+}
+
+message PublishRequest {
+  Identity identity = 1;
+  string topic = 2;
+  Psbt message = 3;
+}
+message PublishReply {
+  string messageId = 1;
+}
+
+message SubscribeRequest {
+  Identity identity = 1;
+  string topic = 2;
+}
+message SubscribeReply {}
+
+message PullRequest {
+  Identity identity = 1;
+  string topic = 2;
 }
