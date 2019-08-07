@@ -5,23 +5,25 @@ package service;
 service VulpemVault {
   rpc NewMultiSig (NewMultiSigRequest) returns (NewMultiSigReply) {}
   rpc SetupMfa (SetupMfaRequest) returns (SetupMfaReply) {}
-  rpc GenerateOtp (GenerateOtpRequest) returns (GenerateOtpReply) {}
   rpc VerifyOtp (VerifyOtpRequest) returns (VerifyOtpReply) {}
   rpc NewUnsignedTx (NewUnsignedTxRequest) returns (NewUnsignedTxReply) {}
   rpc BroadcastTx (BroadcastTxRequest) returns (BroadcastTxReply) {}
   rpc HealthCheck (HealthCheckRequest) returns (HealthCheckReply) {}
+  rpc Publish(PublishRequest) returns (PublishReply) {}
+  rpc Subscribe(SubscribeRequest) returns (SubscribeReply) {}
+  rpc Pull(PullRequest) returns (stream Psbt) {}
 }
 
 message NewMultiSigRequest {
   string network = 1;
-  repeated bytes pubkeys = 2;
+  repeated string pubkeys = 2;
   uint64 satoshiLimit = 3;
   uint64 timeRange = 4;
 }
 message NewMultiSigReply {
   string redeemScript = 1;
   string address = 2;
-  repeated bytes pubkeys = 3;
+  repeated string pubkeys = 3;
 }
 
 message SetupMfaRequest {
@@ -30,13 +32,6 @@ message SetupMfaRequest {
 message SetupMfaReply {
   string barcode = 1;
   string url = 2;
-}
-
-message GenerateOtpRequest {
-  string walletId = 1;
-}
-message GenerateOtpReply {
-  uint64 otp = 1;
 }
 
 message VerifyOtpRequest {
@@ -48,26 +43,60 @@ message VerifyOtpReply {
 }
 
 message NewUnsignedTxRequest {
-  bytes receiver = 1;
+  string receiver = 1;
   int64 amount = 2;
   string walletId = 3;
 }
 message NewUnsignedTxReply {
-  bytes raw = 1;
+  string raw = 1;
 }
 
 message BroadcastTxRequest {
   string walletId = 1;
-  bytes message = 2;
+  string message = 2;
   uint64 otp = 3;
 }
 message BroadcastTxReply {
-  string data = 1;
+  string txHash = 1;
 }
 
-message HealthCheckRequest {
-  string network = 1;
+message Service {
+  int64 code = 1;
+  string status = 2;
+  string name = 3;
+  string network = 4;
+  string error = 5;
 }
+
+message HealthCheckRequest {}
 message HealthCheckReply {
   string status = 1;
+  repeated Service services = 2;
+}
+
+message Identity {
+  string pubkey = 1;
+}
+message Psbt {
+  string encoded = 1;
+}
+
+message PublishRequest {
+  Identity identity = 1;
+  string topic = 2;
+  Psbt message = 3;
+}
+message PublishReply {
+  string messageId = 1;
+}
+
+message SubscribeRequest {
+  Identity identity = 1;
+  string topic = 2;
+}
+message SubscribeReply {}
+
+message PullRequest {
+  Identity identity = 1;
+  string topic = 2;
 }
